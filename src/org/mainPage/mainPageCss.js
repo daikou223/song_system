@@ -1,0 +1,29 @@
+export const styles = {
+  title:{
+    fontSize:30
+  },
+  mainPageHeader:{
+    display:"flex",
+    paddingTop:20,
+    paddingLeft:20,
+  },
+  saerch:{
+    marginLeft:20,
+    width:"70vw",
+    height:30,
+    marginTop:10
+  },
+  registButton:{
+    width:250,
+    height:50,
+    margin:10
+  },
+  goRegistButton:{
+    width:150,
+    height:30,
+    margin:10
+  },
+  shareUser:{
+    fontSize:18
+  }
+}

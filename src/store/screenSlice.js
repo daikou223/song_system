@@ -8,7 +8,8 @@ const screenSlice = createSlice({
     detailId:{},
     userId:1,
     userName:"",
-    reloadCount:0
+    reloadCount:0,
+    isMock:false
   },
 
   reducers: {
@@ -29,10 +30,13 @@ const screenSlice = createSlice({
     },
     setReloadCount(state){
       state.reloadCount += 1
+    },
+    setIsMock(state,action){
+      state.isMock = action.payload;
     }
   },
 });
 
-export const { setSelectedScreen,backSelectScreen,setDetail,setUserId,setUserName,setReloadCount } = screenSlice.actions;
+export const { setSelectedScreen,backSelectScreen,setDetail,setUserId,setUserName,setReloadCount,setIsMock } = screenSlice.actions;
 
 export default screenSlice.reducer;

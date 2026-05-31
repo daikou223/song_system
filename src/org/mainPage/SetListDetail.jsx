@@ -15,11 +15,12 @@ export default function SetListDetail() {
   const [disabled, setDissable] = useState(false);
   const [buttonText, setButtonText] = useState("このセットリストを保存");
   const userId = useSelector((state) => state.screen.userId);
+    const c = useSelector((state)=>state.screen.reloadCount)
   useEffect(() => {
     (async () => {
       setSetListData(await getSetListWithId(setListId, userId));
     })();
-  }, []);
+  }, [c]);
   const savingSetlist = async () => {
     setDissable(true);
     const isSaving = await postSetListWithId(userId, setListId);

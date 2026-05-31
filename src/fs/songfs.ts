@@ -2,18 +2,19 @@ import axios from "axios";
 import { HistoryClass } from "../class/History.ts";
 import { SetListClass } from "../class/SetList.ts";
 import { Song } from "../class/Song.ts";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setReloadCount,
   setSelectedScreen,
   setUserName,
 } from "../store/screenSlice.js";
 import { SCREEN_ID } from "../CONST.js";
-const isMock = false;
+
 export async function getSong(
   userId: string,
   keyWord?: string,
 ): Promise<Song[]> {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/songs?isMock=${isMock}&keyword=${keyWord ?? ""}`,
   );
@@ -35,6 +36,7 @@ export async function getSongWithId(
   id: number,
   user_id: number,
 ): Promise<Song | undefined> {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/song/${id}?isMock=${isMock}&userId=${user_id}`,
   );
@@ -54,10 +56,21 @@ export async function getSongWithId(
   return song;
 }
 
+export async function updateSong(
+  {title,artist,songId}:any
+){
+  const res = await axios.put(
+    `https://daikou-diverse-api.com/data_20260405/song`,{
+      title:title,artist:artist,songId:songId
+    }
+  );
+  return res
+}
 export async function getHistory(
   order: string,
   userId: string,
 ): Promise<Song[]> {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/history?
 isMock=${isMock}&
@@ -72,6 +85,7 @@ export async function getSetList(
   userId: number,
   onlySelf?: boolean,
 ): Promise<SetListClass[]> {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/setLists?
 isMock=${isMock}&
@@ -121,6 +135,7 @@ export async function getSetListWithId(
   id: number,
   userId: number,
 ): Promise<SetListClass | undefined> {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/setlist/${id}?
 isMock=${isMock}&userId=${userId}`,
@@ -198,6 +213,7 @@ export async function setUserNameAsync(newUserName: string, dispatch: any) {
 }
 
 export async function postSetList(datas: any, userId: string, dispatch: any) {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.post(
     `https://daikou-diverse-api.com/data_20260405/setlist/?is_mock=${isMock}`,
     { title: datas?.setListName ?? "名無しのリスト", user_id: userId },
@@ -207,8 +223,9 @@ export async function postSetList(datas: any, userId: string, dispatch: any) {
 }
 
 export async function postSong(datas: any, dispatch: any) {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.post(
-    `https://daikou-diverse-api.com/data_20260405/song/?is_mock=${isMock}`,
+    `https://daikou-diverse-api.com/data_20260405/song/?isMock=${isMock}`,
     { title: datas?.songName, artist: datas?.artist },
   );
   dispatch(setSelectedScreen(SCREEN_ID.HOME));
@@ -222,6 +239,7 @@ export async function postHistory(
   userId: string,
   dispatch: any,
 ) {
+  const isMock = localStorage.getItem("isMock")
   const res = await axios.post(
     `https://daikou-diverse-api.com/data_20260405/history/?is_mock=${isMock}`,
     {
@@ -240,7 +258,6 @@ export async function putSetList(song: any, setListState: any, dispatch: any) {
     `https://daikou-diverse-api.com/data_20260405/setlist/${song.id}`,
     { setLists: setListState },
   );
-  dispatch(setSelectedScreen(SCREEN_ID.HOME));
   dispatch(setReloadCount());
   return true;
 }

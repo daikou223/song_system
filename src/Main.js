@@ -5,23 +5,27 @@ import WithSiteScreen from "./screens/WithSiteScreen";
 import { useDispatch, useSelector } from "react-redux";
 import DetailScreen from "./screens/DetailScreen";
 import { SCREEN_ID } from "./CONST";
-import { setDetail, setSelectedScreen, setUserId, setUserName } from "./store/screenSlice";
+import { setDetail, setIsMock, setSelectedScreen, setUserId, setUserName } from "./store/screenSlice";
 import { authShare, login } from "./fs/songfs.ts";
 
 export default function Main() {
   const selectedScreens = useSelector((state) => state.screen.selectedScreen);
   const selectedScreen = selectedScreens[selectedScreens.length - 1];
   const dispatch = useDispatch()
-  useEffect(() => {
-    window.scroll({
-      top: 0,
-    });
-  }, [selectedScreens]);
+  // useEffect(() => {
+  //   window.scroll({
+  //     top: 0,
+  //   });
+  // }, [selectedScreens]);
   useEffect(()=>{
     const params = new URLSearchParams(window.location.search);
     const userHash = params.get("userHash");
+    const isMock = params.get("isMock");
     if(userHash){
       localStorage.setItem("userHash",userHash)
+    }
+    if(isMock !== undefined){
+      localStorage.setItem("isMock",isMock)
     }
     (async()=>{
       const {isLogin,userName,userId} = await login()
@@ -70,5 +74,6 @@ const WITH_SIDE_SCREEN = [
   SCREEN_ID.SETLIST_DETAIL,
   SCREEN_ID.SONG_REGIST,
   SCREEN_ID.SETLIST_REGIST,
-  SCREEN_ID.LOGIN
+  SCREEN_ID.LOGIN,
+  SCREEN_ID.SONG_UPDATE
 ];

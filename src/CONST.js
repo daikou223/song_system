@@ -6,7 +6,8 @@ export const SCREEN_ID = {
   SETLIST_DETAIL:5,
   SONG_REGIST:6,
   SETLIST_REGIST:7,
-  LOGIN:8
+  LOGIN:8,
+  SONG_UPDATE:9
 }
 
 export const baseURL = `https://daikou-diverse-api.com/songApp`

@@ -6,7 +6,7 @@ import { Song } from "../class/Song.ts";
 import { HistoryClass } from "../class/History.ts";
 import InfomAtom from "../atom/InfomAtom.jsx";
 import { getSongWithId } from "../fs/songfs.ts";
-import { backSelectScreen, setDetail } from "../store/screenSlice.js";
+import { backSelectScreen, setDetail, setSelectedScreen } from "../store/screenSlice.js";
 import { SCREEN_ID } from "../CONST.js";
 import { useEffect, useState } from "react";
 import Loading from "../atom/Loading.jsx";
@@ -48,6 +48,12 @@ export default function DetailScreen() {
         >
           &lt; 一覧に戻る
         </button>
+        {userId == 20 && <button
+          style={{ width: 120, height: 30, margin: 10 }}
+        onClick={() => handleUpdateClick(songId,dispach)}
+        >
+          編集
+        </button>}
         <div style={{ display: "flex" }}>
           <div style={{ fontSize: 28, padding: 10 }}>{song.title}</div>
           <div style={{ fontSize: 18, marginTop: 25 }}>{song.artist}</div>
@@ -59,6 +65,11 @@ export default function DetailScreen() {
       </div>
     </div>
   );
+}
+
+function handleUpdateClick(songId,dispatch){
+  dispatch(setSelectedScreen(SCREEN_ID.SONG_UPDATE))
+    dispatch(setDetail(songId))
 }
 
 function LeftInfom({ song }) {

@@ -37,14 +37,15 @@ app.get("/songs", async (req, res) => {
 LEFT JOIN (
   SELECT
     song_id,
-    MAX(sung_at) as last_sung_at
+    MAX(sung_at) as last_sung_at,
+    MAX(id) as historyId
   FROM histories
   GROUP BY song_id
 ) as history_stats
 ON songs.id = history_stats.song_id
 WHERE songs.is_mock = $1
 AND songs.title LIKE '%' || $2 || '%'
-ORDER BY history_stats.last_sung_at DESC`,
+ORDER BY history_stats.historyId DESC`,
       [isMock, keyword],
     );
 
@@ -126,6 +127,23 @@ app.post("/song", async (req, res) => {
   }
 });
 
+app.put("/song",async (req,res)=>{
+  try {
+    const { title, artist,songId } = req.body;
+
+    const result = await client.query(
+      `
+      update songs set title=$1,artist=$2 where id=$3
+      `,
+      [title, artist,songId],
+    );
+    console.log(result)
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("error");
+  }
+})
 // =========================
 // READ all
 // GET /setlists

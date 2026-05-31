@@ -7,7 +7,7 @@ import { TextItem } from "../class/Form.ts";
 import dayjs from "dayjs";
 import { getSetList, postHistory, postSetList, putSetList } from "../fs/songfs.ts";
 
-const isMobile = window.innerWidth < 768;
+const isMobile = window.innerWidth < 1000;
 
 export default function Songcomp({ song,setlistData }) {
   const dispatch = useDispatch();
@@ -168,7 +168,7 @@ function createOperMenu(menuId, historyDatas,setHistoryDatas,setListState, setSe
         })}
         <button
           style={{ margin: 20, width: isMobile? "80%":120 }}
-          onClick={() => {putSetList(song, setListState,dispatch);setOperMenu(MENU_ID.NONE)}}
+          onClick={() => {putSetList(song, setListState,dispatch)}}
         >
           登録
         </button>

@@ -16,7 +16,7 @@ export default function WithSiteScreen() {
   const selectedScreen =
     selectedScreens[selectedScreens.length - 1];
 
-  const isMobile = window.innerWidth < 768;
+  const isMobile = window.innerWidth < 1000;
 
 return (
   <div style={styles.sidemenuWrapper}>
@@ -68,6 +68,7 @@ function mainScreenBuilder(selectedScreen){
       )
     case SCREEN_ID.SONG_REGIST:
     case SCREEN_ID.SETLIST_REGIST:
+    case SCREEN_ID.SONG_UPDATE:
       return(
         <RegistScreen/>
       )

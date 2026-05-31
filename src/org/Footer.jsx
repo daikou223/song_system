@@ -1,5 +1,5 @@
 export default function Footer() {
-  const isMobile = window.innerWidth < 768;
+  const isMobile = window.innerWidth < 1000;
   if(isMobile){return(<div></div>)}
   return (
     <div style={styles.footerWrapper}>

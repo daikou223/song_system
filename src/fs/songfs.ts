@@ -4,6 +4,7 @@ import { SetListClass } from "../class/SetList.ts";
 import { Song } from "../class/Song.ts";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setModalMessage,
   setReloadCount,
   setSelectedScreen,
   setUserName,
@@ -57,13 +58,15 @@ export async function getSongWithId(
 }
 
 export async function updateSong(
-  {title,artist,songId}:any
+  {title,artist,songId}:any,
+  dispatch:any
 ){
   const res = await axios.put(
     `https://daikou-diverse-api.com/data_20260405/song`,{
       title:title,artist:artist,songId:songId
     }
   );
+  dispatch(setModalMessage("変更しました"))
   return res
 }
 export async function getHistory(
@@ -169,7 +172,7 @@ setlistId=${id}&userId=${userId}`,
   return setList;
 }
 
-export async function postSetListWithId(userId: number, setlistId: number) {
+export async function postSetListWithId(userId: number, setlistId: number,dispatch:any) {
   const is_saving = await axios.get(
     `https://daikou-diverse-api.com/data_20260405/is_save?
 setlistId=${setlistId}&userId=${userId}`,
@@ -179,6 +182,7 @@ setlistId=${setlistId}&userId=${userId}`,
       `https://daikou-diverse-api.com/data_20260405/is_save`,
       { setlistId: setlistId, userId: userId },
     );
+    dispatch(setModalMessage("セットリストを保存しました"))
     return result;
   }
   return false;
@@ -206,6 +210,7 @@ export async function setUserNameAsync(newUserName: string, dispatch: any) {
   );
   if (res.status == 200) {
     dispatch(setUserName(newUserName));
+    dispatch(setModalMessage("変更しました"))
   } else {
     console.log("error");
   }
@@ -219,6 +224,7 @@ export async function postSetList(datas: any, userId: string, dispatch: any) {
     { title: datas?.setListName ?? "名無しのリスト", user_id: userId },
   );
   dispatch(setSelectedScreen(SCREEN_ID.SETLIST));
+  dispatch(setModalMessage("セットリストを登録しました"))
   return true;
 }
 
@@ -229,6 +235,7 @@ export async function postSong(datas: any, dispatch: any) {
     { title: datas?.songName, artist: datas?.artist },
   );
   dispatch(setSelectedScreen(SCREEN_ID.HOME));
+  dispatch(setModalMessage("曲を登録しました"))
   return true;
 }
 
@@ -258,15 +265,8 @@ export async function putSetList(song: any, setListState: any, dispatch: any) {
     `https://daikou-diverse-api.com/data_20260405/setlist/${song.id}`,
     { setLists: setListState },
   );
-  dispatch(setReloadCount());
+  dispatch(setModalMessage("セットリストに追加 / 削除しました"))
+  dispatch(setReloadCount()); 
   return true;
 }
 
-function createRandom(): () => number {
-  let value = seed;
-  seed = (seed * 16807) % 2147483647;
-  return () => {
-    value = (value * 16807) % 2147483647;
-    return value / 2147483647;
-  };
-}

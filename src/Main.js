@@ -5,12 +5,14 @@ import WithSiteScreen from "./screens/WithSiteScreen";
 import { useDispatch, useSelector } from "react-redux";
 import DetailScreen from "./screens/DetailScreen";
 import { SCREEN_ID } from "./CONST";
-import { setDetail, setIsMock, setSelectedScreen, setUserId, setUserName } from "./store/screenSlice";
+import { setDetail, setIsMock, setModalMessage, setSelectedScreen, setUserId, setUserName } from "./store/screenSlice";
 import { authShare, login } from "./fs/songfs.ts";
 
 export default function Main() {
   const selectedScreens = useSelector((state) => state.screen.selectedScreen);
   const selectedScreen = selectedScreens[selectedScreens.length - 1];
+  const modalMessage = useSelector((state)=>state.screen.modalMessage);
+  console.log(modalMessage)
   const dispatch = useDispatch()
   // useEffect(() => {
   //   window.scroll({
@@ -52,9 +54,36 @@ export default function Main() {
     <div>
       <Header />
       <div style={{ paddingTop: 60, paddingBottom: 60 }}>
+        {modalMessage?.length !== 0 && <Modal text = {modalMessage}/>}
         {MainScreenBuilder(selectedScreen)}
       </div>
       <Footer />
+    </div>
+  );
+}
+
+function Modal({ text }) {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(setModalMessage(""));
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [text]);
+
+  return (
+    <div
+      style={styles.overlay}
+      onClick={() => dispatch(setModalMessage(""))}
+    >
+      <div
+        style={styles.modal}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {text}
+      </div>
     </div>
   );
 }
@@ -77,3 +106,31 @@ const WITH_SIDE_SCREEN = [
   SCREEN_ID.LOGIN,
   SCREEN_ID.SONG_UPDATE
 ];
+
+const styles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.3)",
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    zIndex: 9999,
+  },
+
+  modal: {
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 8,
+    minWidth: 300,
+    maxWidth: "80%",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    fontSize: 18,
+    textAlign: "center",
+  },
+};

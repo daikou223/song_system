@@ -9,7 +9,8 @@ const screenSlice = createSlice({
     userId:1,
     userName:"",
     reloadCount:0,
-    isMock:false
+    isMock:false,
+    modalMessage:""
   },
 
   reducers: {
@@ -33,10 +34,13 @@ const screenSlice = createSlice({
     },
     setIsMock(state,action){
       state.isMock = action.payload;
+    },
+    setModalMessage(state,action){
+      state.modalMessage = action.payload
     }
   },
 });
 
-export const { setSelectedScreen,backSelectScreen,setDetail,setUserId,setUserName,setReloadCount,setIsMock } = screenSlice.actions;
+export const { setSelectedScreen,backSelectScreen,setDetail,setUserId,setUserName,setReloadCount,setIsMock,setModalMessage } = screenSlice.actions;
 
 export default screenSlice.reducer;

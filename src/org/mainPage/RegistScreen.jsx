@@ -6,8 +6,8 @@ import Loading from "../../atom/Loading.jsx";
 import { styles } from "./mainPageCss.js";
 import TextInput from "../../atom/InputAtom/TextInput.jsx";
 import SelectInput from "../../atom/InputAtom/SelectInput.jsx";
-import { login, postSetList, postSong } from "../../fs/songfs.ts";
-import { setSelectedScreen, setUserId, setUserName } from "../../store/screenSlice.js";
+import { getSongWithId, login, postSetList, postSong, updateSong } from "../../fs/songfs.ts";
+import { backSelectScreen, setSelectedScreen, setUserId, setUserName } from "../../store/screenSlice.js";
 
 export default function RegistScreen() {
   const selectedScreens = useSelector((state) => state.screen.selectedScreen);
@@ -16,9 +16,21 @@ export default function RegistScreen() {
   const dispatch = useDispatch()
   const userName = useSelector((state)=>state.screen.userUserName)
   const userId = useSelector((state)=> state.screen.userId)
+  const detailId = useSelector((state)=>state.screen.detailId[selectedScreen])
 
   const form = itemBuilder(selectedScreen,userName);
   useEffect(()=>{
+    if(selectedScreen == SCREEN_ID.SONG_UPDATE){
+      (async()=>{
+        const res = await getSongWithId(detailId,userId)
+        console.log(res)
+        setDatas({
+          song:res?.title ?? "",
+          artist:res?.artist ?? "",
+          songId:detailId
+        })
+      })()
+    }
     datasInit(setDatas, form);
   },[])
 
@@ -42,7 +54,7 @@ function datasInit(setDatas, items) {
   items.items.forEach((i) => {
     switch (i.className) {
       case FORM_CLASS.TEXT_ITEM:
-        stateData[i.key] = "";
+        stateData[i.key] = stateData?.[i.key] ?? "";
         break;
       case FORM_CLASS.SELECT_ITEM:
         stateData[i.key] = i?.selection[0] ?? null;
@@ -52,7 +64,7 @@ function datasInit(setDatas, items) {
   setDatas(stateData);
 }
 
-function itemBuilder(selectedScreen,userName) {
+function itemBuilder(selectedScreen,userName,data) {
   switch (selectedScreen) {
     case SCREEN_ID.SONG_REGIST:
       return new Form("曲登録",[
@@ -66,6 +78,11 @@ function itemBuilder(selectedScreen,userName) {
     case SCREEN_ID.LOGIN:
       return new Form("ユーザーメニュー",[
         new TextItem("userName", "ユーザーネーム", userName,true),
+      ]);
+    case SCREEN_ID.SONG_UPDATE:
+      return new Form("歌情報更新",[
+        new TextItem("song", "曲名", data?.title ?? "" ,true),
+        new TextItem("artist", "歌手名", data?.artist ?? "" ,true)
       ]);
   }
 }
@@ -93,6 +110,8 @@ function buttonBuilder(screenSelector,data,dispach,userId){
       return(<button style = {styles.registButton} onClick={()=>setSetList(data,dispach,userId)}>登録</button>)
     case SCREEN_ID.SONG_REGIST:
       return(<button style = {styles.registButton} onClick={()=>setSong(data,dispach)}>登録</button>)
+    case SCREEN_ID.SONG_UPDATE:
+      return(<button style = {styles.registButton} onClick={async ()=> await udtSong(data,dispach)}>登録</button>)
   }
 }
 
@@ -103,5 +122,10 @@ function setSetList(data,dispatch,userId){
 
 function setSong(data,dispatch){
   const isSuc = postSong(data,dispatch)
+}
+
+async function udtSong(data,dispach){
+  await updateSong({title:data?.["song"]??"",artist:data?.["artist"] ?? "",songId:data?.["songId"]??0},dispach)
+  dispach(backSelectScreen())
 }
 

@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSetListWithId, postSetListWithId } from "../../fs/songfs.ts";
 import { styles } from "./mainPageCss.js";
 import SongList from "../../molcule/SongList";
@@ -15,14 +15,16 @@ export default function SetListDetail() {
   const [disabled, setDissable] = useState(false);
   const [buttonText, setButtonText] = useState("このセットリストを保存");
   const userId = useSelector((state) => state.screen.userId);
+  const dispatch = useDispatch()
+    const c = useSelector((state)=>state.screen.reloadCount)
   useEffect(() => {
     (async () => {
       setSetListData(await getSetListWithId(setListId, userId));
     })();
-  }, []);
+  }, [c]);
   const savingSetlist = async () => {
     setDissable(true);
-    const isSaving = await postSetListWithId(userId, setListId);
+    const isSaving = await postSetListWithId(userId, setListId,dispatch);
 
     setSetListData((prev) => ({
       ...prev,

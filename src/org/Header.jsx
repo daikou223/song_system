@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSelectedScreen } from "../store/screenSlice";
 import { SCREEN_ID } from "../CONST";
 
-const isMobile = window.innerWidth < 768;
+const isMobile = window.innerWidth < 1000;
 
 export default function Header(){
   return(

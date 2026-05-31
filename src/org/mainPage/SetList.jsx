@@ -7,7 +7,7 @@ import { setDetail, setSelectedScreen } from '../../store/screenSlice.js';
 import { SCREEN_ID } from '../../CONST.js';
 import { useEffect, useState } from 'react';
 
-const isMobile = window.innerWidth < 768;
+const isMobile = window.innerWidth < 1000;
 
 export default function SetList(){
   const userId = useSelector((state)=>state.screen.userId)
